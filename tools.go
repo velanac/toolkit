@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -157,4 +158,19 @@ func (t *Tools) CreateDirIfNotExist(dir string) error {
 		}
 	}
 	return nil
+}
+
+// Slugify is a (very) simple slugify function that converts a string to a URL-friendly slug.
+func (t *Tools) Slugify(s string) (string, error) {
+	if len(s) == 0 {
+		return "", errors.New("the string is empty")
+	}
+	var re = regexp.MustCompile(`[^a-z\d]+`)
+
+	slug := strings.Trim(re.ReplaceAllString(strings.ToLower(s), "-"), "-")
+	if len(slug) == 0 {
+		return "", errors.New("the string is empty after slugify")
+	}
+
+	return slug, nil
 }
